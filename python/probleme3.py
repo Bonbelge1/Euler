@@ -1,4 +1,8 @@
 def listPrimeNumbers(maxRange):
+	if maxRange == 2:
+		return [2]
+	if maxRange < 2:
+		return []
 	listPrime = [2]
 	for testIfPrime in range(3, maxRange + 1, 2):
 		verificator = True
@@ -10,25 +14,61 @@ def listPrimeNumbers(maxRange):
 			listPrime.append(testIfPrime)
 	return listPrime
 
+
 def isPrime(number):
+	if number < 2:
+		return False
 	for i in listPrimeNumbers(int(number ** (1/2))):
 		if number % i == 0: 
 			return False
 	return True
+
+
+def nextPrimeFromNumber(number):
+	if number <= 1:
+		return 2
+	else:
+		return nextPrimeFromList(listPrimeNumbers(number))
+
 	
-def nextPrime(primeList):
+def nextPrimeFromList(primeList):  
 	sortedList = sorted(set(primeList))
-	iterable = sortedList[-1] + 2
-	boolean = True
-	while boolean:
-		for i in sortedList:
-			if iterable % i == 0:
-				
-		
+	#Verification of primes
+	for i in sortedList:
+		if not isPrime(i):
+			return nextPrimeFromNumber(sortedList[-1])
+	if sortedList[-1] == 2:
+		iterable = 3
+	else:
+		iterable = sortedList[-1] + 2
+	while True:
+		verificator = True
+		for foundPrimes in [i for i in sortedList if i <= int(iterable ** (1/2))]:
+			verificator = verificator and (iterable % foundPrimes)
+			if not verificator:
+				break
+		if verificator:
+			return iterable
+		iterable += 2	
+
+
+def addPrimeFromList(primeList):
+	return primeList.append(nextPrimeFromList(primeList))
+
+
 def main():
-	#nb = 600851475143
-	#print([i for i in list(reversed(listPrimeNumbers(int(nb ** (1/2))))) if 600851475143 % i == 0])
-	#print(isPrime(9))
+	nb = 600851475143
+	divider = nextPrimeFromNumber(1)
+	while divider <= int(nb**(1/2)):
+		division = True
+		while division:
+			if not nb % divider:
+				nb //= divider
+				#print(nb)
+			else:
+				division = False
+				divider = nextPrimeFromNumber(divider)
+	print(nb)		
 
 
 if __name__ == "__main__":
